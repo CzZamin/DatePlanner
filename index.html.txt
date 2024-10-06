@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="cs">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Planner</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #FFC0CB;
+            background-image: url('https://i.pinimg.com/originals/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.png');
+            background-repeat: repeat;
+            background-size: 100px;
+        }
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: #FFF0F5;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255,105,180,0.3);
+            border: 2px solid #FF69B4;
+        }
+        h1 {
+            text-align: center;
+            color: #FF69B4;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #FF1493;
+            font-weight: 600;
+        }
+        input[type="date"], input[type="text"], textarea, select {
+            width: 96%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #FFB6C1;
+            border-radius: 10px;
+            background-color: #FFF0F5;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #FF1493;
+        }
+        #specificActivity {
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Date Planner</h1>
+        <div id="specificActivity" style="display: none;">
+            <label for="otherActivity">Specify Activity:</label>
+            <input type="text" id="otherActivity" required>
+        </div>
+        <form id="datePlannerForm">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+            
+            <label for="location">Location:</label>
+            <input type="text" id="location" required>
+            
+            <label for="activity">Activity:</label>
+            <select id="activity" required>
+                <option value="">Select an activity</option>
+                <option value="Picnic">Picnic</option>
+                <option value="Movie">Movie</option>
+                <option value="Dinner">Dinner</option>
+                <option value="Walk">Walk</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <label for="activityNotes">Notes for activity:</label>
+            <textarea id="activityNotes" rows="4"></textarea>
+            
+            <label for="notes">Notes:</label>
+            <textarea id="notes" rows="4"></textarea>
+            
+            <button type="submit">Save Date Plan</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('datePlannerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const date = document.getElementById('date').value;
+            const activity = document.getElementById('activity').value;
+            const location = document.getElementById('location').value;
+            const notes = document.getElementById('notes').value;
+            
+            console.log('Date Plan:', { date, location, activity, activityNotes, notes });
+            // Check if there's an existing saved plan
+            const existingSavedPlan = document.getElementById('savedPlan');
+            if (existingSavedPlan) {
+                // Move the existing plan down
+                existingSavedPlan.style.top = '340px'; // Adjust this value as needed
+            }
+
+            // Create a new div to display the saved date plan
+            const savedPlanDiv = document.createElement('div');
+            savedPlanDiv.id = 'savedPlan';
+            savedPlanDiv.style.position = 'fixed';
+            savedPlanDiv.style.right = '20px';
+            savedPlanDiv.style.top = '20px';
+            savedPlanDiv.style.width = '300px';
+            savedPlanDiv.style.padding = '20px';
+            savedPlanDiv.style.backgroundColor = '#f0f0f0';
+            savedPlanDiv.style.border = '1px solid #ccc';
+            savedPlanDiv.style.borderRadius = '5px';
+            
+            // Create the content for the saved plan
+            const savedPlanContent = `
+                <h2>Saved Date Plan</h2>
+                <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Location:</strong> ${location}</p>
+                <p><strong>Activity:</strong> ${activity === 'Other' ? document.getElementById('otherActivity').value : activity}</p>
+                <p><strong>Activity Notes:</strong> ${document.getElementById('activityNotes').value}</p>
+                <p><strong>Notes:</strong> ${notes}</p>
+            `;
+
+            // Set the content of the div
+            savedPlanDiv.innerHTML = savedPlanContent;
+
+            // Add the div to the body
+            document.body.appendChild(savedPlanDiv);
+
+            // Function to remove the saved plan display
+            
+            alert('Date plan saved!');
+            this.reset();
+        });
+    </script>
+</body>
