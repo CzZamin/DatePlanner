@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="cs">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -105,54 +104,78 @@
     </div>
 
     <script>
+        // Initialize an array to store all saved date plans
+        let savedDatePlans = JSON.parse(localStorage.getItem('savedDatePlans')) || [];
+
         document.getElementById('datePlannerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const date = document.getElementById('date').value;
             const activity = document.getElementById('activity').value;
             const location = document.getElementById('location').value;
+            const activityNotes = document.getElementById('activityNotes').value;
             const notes = document.getElementById('notes').value;
             
-            console.log('Date Plan:', { date, location, activity, activityNotes, notes });
-            // Check if there's an existing saved plan
-            const existingSavedPlan = document.getElementById('savedPlan');
-            if (existingSavedPlan) {
-                // Move the existing plan down
-                existingSavedPlan.style.top = '340px'; // Adjust this value as needed
-            }
-
-            // Create a new div to display the saved date plan
-            const savedPlanDiv = document.createElement('div');
-            savedPlanDiv.id = 'savedPlan';
-            savedPlanDiv.style.position = 'fixed';
-            savedPlanDiv.style.right = '20px';
-            savedPlanDiv.style.top = '20px';
-            savedPlanDiv.style.width = '300px';
-            savedPlanDiv.style.padding = '20px';
-            savedPlanDiv.style.backgroundColor = '#f0f0f0';
-            savedPlanDiv.style.border = '1px solid #ccc';
-            savedPlanDiv.style.borderRadius = '5px';
+            // Create a new date plan object
+            const newDatePlan = { date, location, activity, activityNotes, notes };
             
-            // Create the content for the saved plan
-            const savedPlanContent = `
-                <h2>Saved Date Plan</h2>
-                <p><strong>Date:</strong> ${date}</p>
-                <p><strong>Location:</strong> ${location}</p>
-                <p><strong>Activity:</strong> ${activity === 'Other' ? document.getElementById('otherActivity').value : activity}</p>
-                <p><strong>Activity Notes:</strong> ${document.getElementById('activityNotes').value}</p>
-                <p><strong>Notes:</strong> ${notes}</p>
-            `;
-
-            // Set the content of the div
-            savedPlanDiv.innerHTML = savedPlanContent;
-
-            // Add the div to the body
-            document.body.appendChild(savedPlanDiv);
-
-            // Function to remove the saved plan display
+            // Add the new date plan to the array
+            savedDatePlans.push(newDatePlan);
+            
+            // Save the updated array to localStorage
+            localStorage.setItem('savedDatePlans', JSON.stringify(savedDatePlans));
+            
+            // Display all saved date plans
+            displaySavedDatePlans();
             
             alert('Date plan saved!');
             this.reset();
         });
+
+        function displaySavedDatePlans() {
+            // Remove any existing saved plans display
+            const existingSavedPlans = document.getElementById('savedPlans');
+            if (existingSavedPlans) {
+                existingSavedPlans.remove();
+            }
+
+            // Create a new div to display all saved date plans
+            const savedPlansDiv = document.createElement('div');
+            savedPlansDiv.id = 'savedPlans';
+            savedPlansDiv.style.position = 'fixed';
+            savedPlansDiv.style.right = '20px';
+            savedPlansDiv.style.top = '20px';
+            savedPlansDiv.style.width = '300px';
+            savedPlansDiv.style.maxHeight = '80vh';
+            savedPlansDiv.style.overflowY = 'auto';
+            savedPlansDiv.style.padding = '20px';
+            savedPlansDiv.style.backgroundColor = '#f0f0f0';
+            savedPlansDiv.style.border = '1px solid #ccc';
+            savedPlansDiv.style.borderRadius = '5px';
+
+            // Create the content for all saved plans
+            let savedPlansContent = '<h2>Saved Date Plans</h2>';
+            savedDatePlans.forEach((plan, index) => {
+                savedPlansContent += `
+                    <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                        <h3>Plan ${index + 1}</h3>
+                        <p><strong>Date:</strong> ${plan.date}</p>
+                        <p><strong>Location:</strong> ${plan.location}</p>
+                        <p><strong>Activity:</strong> ${plan.activity === 'Other' ? plan.otherActivity : plan.activity}</p>
+                        <p><strong>Activity Notes:</strong> ${plan.activityNotes}</p>
+                        <p><strong>Notes:</strong> ${plan.notes}</p>
+                    </div>
+                `;
+            });
+
+            // Set the content of the div
+            savedPlansDiv.innerHTML = savedPlansContent;
+
+            // Add the div to the body
+            document.body.appendChild(savedPlansDiv);
+        }
+
+        // Display saved date plans when the page loads
+        window.addEventListener('load', displaySavedDatePlans);
     </script>
 </body>
